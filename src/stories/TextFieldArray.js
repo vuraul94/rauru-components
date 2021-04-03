@@ -3,11 +3,12 @@ import PropTypes from "prop-types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import styled from "styled-components";
+import TextField from "./TextField";
 
 /**
  * An Input that saves multiple values (This can be usefull with tags or saving multiple urls)
  */
-export const MultiInput = ({
+export const TextFieldArray = ({
   placeholder,
   Wrapper = React.Fragment,
   wrapperProps = {},
@@ -21,7 +22,6 @@ export const MultiInput = ({
   color,
   textColor,
 }) => {
-  const multiInputRef = useRef();
   const errorMsg = useRef();
 
   const handleKeyPress = (e) => {
@@ -33,7 +33,7 @@ export const MultiInput = ({
       if (!regex || new RegExp(regex).test(newValue)) {
         const newValues = [...values, newValue];
         onChange(newValues);
-        multiInputRef.current.value = "";
+        e.target.value = "";
         errorMsg.current.innerText = "";
       } else {
         errorMsg.current.innerText = regexMsg;
@@ -62,30 +62,39 @@ export const MultiInput = ({
           {Wrapper !== "img" ? (
             <Wrapper {...props}>{value}</Wrapper>
           ) : (
-            <img src={value} height={height} width={width} />
+            <img
+              src={value}
+              height={height}
+              width={width}
+              alt={`multiinput${i}`}
+            />
           )}
-          <FontAwesomeIcon icon={faTrash} onClick={() => removeItem(i)} />
+          <FontAwesomeIcon
+            className="delete-btn"
+            icon={faTrash}
+            onClick={() => removeItem(i)}
+          />
         </div>
       );
     });
   };
 
   return (
-    <MultiInputStyles color={color} textColor={textColor}>
+    <TextFieldArrayStyles color={color} textColor={textColor}>
       <div className="multi-input-elements">{generateElements()}</div>
-      <input
+
+      <TextField
         type="text"
         placeholder={placeholder}
         onKeyPress={handleKeyPress}
-        ref={multiInputRef}
         className="multi-input-input"
       />
       <div className="error-msg" ref={errorMsg}></div>
-    </MultiInputStyles>
+    </TextFieldArrayStyles>
   );
 };
 
-MultiInput.propTypes = {
+TextFieldArray.propTypes = {
   /**
    * A string thath work as the input placeholder
    */
@@ -108,7 +117,7 @@ MultiInput.propTypes = {
    */
   values: PropTypes.array,
   /**
-   * I use a setState here
+   * The usual onChange of the inputs
    */
   onChange: PropTypes.func,
   /**
@@ -131,13 +140,12 @@ MultiInput.propTypes = {
    * This prop only do something if the wrapper is "img"
    */
   width: PropTypes.number,
-  /**
-   * Aestetic prop
-   */
+
   color: PropTypes.string,
+  textColor: PropTypes.string,
 };
 
-const MultiInputStyles = styled.div.attrs((props) => ({
+const TextFieldArrayStyles = styled.div.attrs((props) => ({
   color: props.color || "#00CCFF",
   textColor: props.textColor || "#FFFFFF",
 }))`
@@ -148,7 +156,8 @@ const MultiInputStyles = styled.div.attrs((props) => ({
     display: flex;
     flex-wrap: wrap;
     max-width: 100%;
-    .value-element {
+    .value-element,
+    a {
       margin: 0.3rem;
       background-color: ${(props) => props.color};
       padding: 0.3rem 0.5rem;
@@ -159,17 +168,11 @@ const MultiInputStyles = styled.div.attrs((props) => ({
       }
     }
   }
-  .multi-input-input {
-    display: flex;
-    width: 100%;
-    border: none;
-    border-bottom: 0.1rem solid ${(props) => props.color};
-    padding: 0.3rem;
-    :focus {
-      outline: none;
-      border-bottom: 0.2rem solid ${(props) => props.color};
+  .delete-btn {
+    :hover {
+      cursor: pointer;
     }
   }
 `;
 
-export default MultiInput;
+export default TextFieldArray;

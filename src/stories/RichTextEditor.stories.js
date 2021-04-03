@@ -1,12 +1,11 @@
 import React, { useState } from "react";
 import RichTextEditor from "./RichTextEditor";
 
-export default {
+const RichTextEditorStory = {
   title: "Inputs/RichTextEditor",
   component: RichTextEditor,
   argTypes: {
     color: { control: "color" },
-    textColor: { control: "color" },
   },
 };
 
@@ -15,9 +14,11 @@ const Template = (args) => {
   return <RichTextEditor {...args} value={state} onChange={setState} />;
 };
 
-export const BASIC_RichTextEditor= Template.bind({});
+export const BASIC_RichTextEditor = Template.bind({});
 BASIC_RichTextEditor.args = {
   placeholder: "Write Something",
   KeyPrefix: "simple-rich-text",
+  id: "basic-rich-editor",
 };
 
+export default RichTextEditorStory;
